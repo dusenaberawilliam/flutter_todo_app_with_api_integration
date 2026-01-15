@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               if (controller.text.isNotEmpty) {
                 context.read<TodoViewModel>().addTodo(controller.text);
-
+                controller.dispose();
                 Navigator.pop(context);
               }
             },
