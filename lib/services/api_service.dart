@@ -31,7 +31,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> updateTodo(int id, bool completed) async {
     final response = await http.put(
-      Uri.parse("$_baseUrl/todo/$id"),
+      Uri.parse("$_baseUrl/todos/$id"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"completed": completed}),
     );
@@ -44,7 +44,7 @@ class ApiService {
   }
 
   Future<void> deleteTodo(int id) async {
-    final response = await http.delete(Uri.parse("$_baseUrl/todo/$id"));
+    final response = await http.delete(Uri.parse("$_baseUrl/todos/$id"));
 
     if (response.statusCode != 200) throw Exception("Failed to delete todo");
   }
