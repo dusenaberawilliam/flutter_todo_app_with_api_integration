@@ -51,7 +51,7 @@ class ApiService {
       final response = await http.post(
         Uri.parse("$_baseUrl/todos/add"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"todo": todo, "userId": userId}),
+        body: jsonEncode({"todo": todo, "completed": false, "userId": userId}),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
