@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/models/todo_model.dart';
 import 'package:todo_app/view_models/todo_view_model.dart';
 import 'package:todo_app/widgets/custom_app_bar.dart';
 
@@ -11,15 +12,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final TextEditingController _addTodoController;
+
   @override
   void initState() {
     super.initState();
+
+    _addTodoController = TextEditingController();
 
     Future.microtask(() async {
       if (!mounted) return;
 
       context.read<TodoViewModel>().fetchTodos();
     });
+  }
+
+  @override
+  void dispose() {
+    _addTodoController.dispose();
+    super.dispose();
   }
 
   @override
@@ -101,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _todoCard(BuildContext context, todo) {
+  Widget _todoCard(BuildContext context, Todo todo) {
     return Card(
       margin: const EdgeInsets.all(6),
       elevation: 0,
@@ -141,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Bottom sheet to add new todo
   void _openAddTodoBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -173,10 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Bottom sheet
+  // Form to add new todo
   Widget _addTodoForm(BuildContext context) {
-    final controller = TextEditingController();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 16),
         TextField(
-          controller: controller,
+          controller: _addTodoController,
           decoration: const InputDecoration(
             labelText: "Todo title",
             border: OutlineInputBorder(),
@@ -197,11 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              if (controller.text.isNotEmpty) {
-                context.read<TodoViewModel>().addTodo(controller.text);
-                controller.dispose();
-                Navigator.pop(context);
-              }
+              final text = _addTodoController.text.trim();
+              final userId = 1; // Hardcoded user id
+              if (text.isEmpty) return;
+
+              // userId is hardcoded to 1 just as API requirement
+              context.read<TodoViewModel>().addTodo(text, userId);
+              _addTodoController.clear();
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

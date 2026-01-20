@@ -1,0 +1,26 @@
+enum ApiErrorType {
+  network,
+  notFound,
+  unauthorized,
+  server,
+  unknown,
+}
+
+class ApiException implements Exception {
+  final String message;
+  final ApiErrorType type;
+  final int? statusCode;
+  final String? response;
+
+  ApiException(
+    this.message, {
+    required this.type,
+    this.statusCode,
+    this.response,
+  });
+
+  @override
+  String toString() {
+    return 'ApiException(message: $message, type: $type, statusCode: $statusCode)';
+  }
+}
